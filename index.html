@@ -235,7 +235,30 @@
 <footer>
   <p>Earth Harmony Sound & Wellness · Marcus Fung</p>
   <p style="margin-top:8px;">These are 60-second previews. Full tracks available on request.</p>
-  <a href="mailto:earthharmonysoundhealing@gmail.com" class="contact-btn">Request Full Tracks</a>
+  <button class="contact-btn" onclick="sendFeedback()" style="border:none;cursor:pointer;">📩 Send All Feedback to Marcus</button>
+  <a href="mailto:earthharmonysoundhealing@gmail.com" class="contact-btn" style="margin-left:10px;">Request Full Tracks</a>
+  <script>
+  function sendFeedback() {
+    const comments = JSON.parse(localStorage.getItem('sampler-trista-comments') || '{}');
+    let body = 'Hi Marcus — here is my feedback on the sampler:\n\n';
+    const trackNames = {};
+    document.querySelectorAll('.track').forEach(el => {
+      const title = el.querySelector('.track-title');
+      if (title) trackNames[el.dataset.id] = title.textContent;
+    });
+    let hasComments = false;
+    for (const [tid, arr] of Object.entries(comments)) {
+      if (!arr || !arr.length) continue;
+      hasComments = true;
+      body += '🎵 ' + (trackNames[tid] || tid) + ':\n';
+      arr.forEach(c => { body += '  - ' + c.text + '\n'; });
+      body += '\n';
+    }
+    if (!hasComments) { body += '(No comments yet — but I wanted to reach out!)\n'; }
+    const mailto = 'mailto:earthharmonysoundhealing@gmail.com?subject=' + encodeURIComponent('Sampler Feedback — Trista') + '&body=' + encodeURIComponent(body);
+    window.location.href = mailto;
+  }
+  </script>
 </footer>
 
 <script>
